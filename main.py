@@ -3,20 +3,22 @@ from image_loader import img_loader
 from map import *
 
 pygame.init()
-
+# 7 - greenhouse
+# 8 - cottage
+# 9 - mill
 # 10 - gem
 # 11 - dirt
 # 12 - stone
 # 13 - free tile
-# 14 - free tile
-# 15 - free tile
-# 16 - free tile
-# 17 - free tile
+# 14 - rocks 1
+# 15 - rocks 2
+# 16 - charge bat spawn
+# 17 - laser bat spawn
 # 18 - wheat
-# 19 - fake bee hive
+# 19 - bridge
 # 20 - portal
-# 21 - dirt tile rocks
-# 22 - greenhouse
+# 21 - free tile
+# 22 - free tile
 # 23 - bear trap
 # 24 - platform
 # 25 - wobbly mushrooms
@@ -45,41 +47,52 @@ pygame.init()
 # 48 - dark background tile
 
 tile_key = {
-    1: 10,
-    2: 11,
-    3: 12,
-    4: 18,
-    5: 19,
-    6: 20,
-    7: 21,
-    8: 22,
-    9: 23,
-    10: 24,
-    11: 25,
-    12: 26,
-    13: 27,
-    14: 28,
-    15: 29,
-    16: 30,
-    17: 31,
-    18: 32,
-    19: 33,
-    20: 34,
-    21: 35,
-    22: 36,
-    23: 37,
-    24: 38,
-    25: 39,
-    26: 40,
-    27: 41,
-    28: 42,
-    29: 43,
-    30: 44,
-    31: 45,
-    32: 46,
-    33: 47,
-    34: 48
+    0: 10,
+    1: 11,
+    2: 12,
+    3: 13,
+    4: 14,
+    5: 15,
+    6: 18,
+    7: 19,
+    8: 20,
+    9: 21,
+    10: 22,
+    11: 23,
+    12: 24,
+    13: 25,
+    14: 26,
+    15: 27,
+    16: 28,
+    17: 29,
+    18: 30,
+    19: 31,
+    20: 32,
+    21: 33,
+    22: 34,
+    23: 35,
+    24: 36,
+    25: 37,
+    26: 38,
+    27: 39,
+    28: 40,
+    29: 41,
+    30: 42,
+    31: 43,
+    32: 44,
+    33: 45,
+    34: 46,
+    35: 47,
+    36: 48,
+    37: 49,
+    38: 50,
+    39: 51,
+    40: 7,
+    41: 8,
+    42: 9
 }
+
+num_tiles = 42
 
 inverted_tile_key = {v: k for k, v in tile_key.items()}
 
@@ -94,8 +107,18 @@ big_tiles = {
 }
 
 map = level7
+bg_map = []
+for row in map:
+    bg_row = []
+    for col in row:
+        bg_row.append(0)
+        bg_row.append(0)
+    bg_map.append(bg_row.copy())
+    bg_map.append(bg_row.copy())
+
 run = True
 tile_size = 30
+bg_tile_size = 15
 width = 1200
 canvas_width = 1020
 height = 900
@@ -124,17 +147,22 @@ for column in range(int(canvas_width / tile_size)):
 
 
 # loading images -------------------------------------------------------------------------------------------------------
-background = pygame.transform.scale(pygame.image.load('menu_background.png'), (canvas_width, height))
 
 tile_images = {
+    7: img_loader('data/images/greenhouse.PNG', tile_size * 3, tile_size * 2),
+    8: img_loader('data/images/cottage.PNG', tile_size * 6, tile_size * 4),
+    9: img_loader('data/images/mill.PNG', tile_size * 8, tile_size * 6),
     10: img_loader('data/images/gem.PNG', tile_size / 2, tile_size / 2),
     11: img_loader(f'data/images/tile_dirt.PNG', tile_size, tile_size),
     12: img_loader(f'data/images/tile_stone.PNG', tile_size, tile_size),
+    13: img_loader('data/images/tile_brick.PNG', tile_size, tile_size),
+    14: img_loader('data/images/rock1.PNG', tile_size, tile_size),
+    15: img_loader('data/images/rock2.PNG', tile_size, tile_size),
     18: img_loader('data/images/light_wheat_plant.PNG', 3, tile_size),
-    19: img_loader('data/images/bee_hive.PNG', tile_size, 1.5 * tile_size),
+    19: img_loader('data/images/bridge_section.PNG', tile_size, 7),
     20: img_loader('data/images/portal.PNG', tile_size, tile_size),
     21: img_loader(f'data/images/tile_dirt_rocks.PNG', tile_size, tile_size),
-    22: img_loader('data/images/greenhouse.PNG', tile_size * 3, tile_size * 2),
+    22: img_loader(f'data/images/bread.PNG', tile_size, tile_size),
     23: img_loader('data/images/bear_trap_shut.PNG', tile_size, tile_size / 2),
     24: img_loader('data/images/platform.PNG', tile_size, tile_size),
     25: img_loader('data/images/green_mushroom.PNG', tile_size / 2, tile_size / 2),
@@ -159,8 +187,11 @@ tile_images = {
     44: img_loader('data/images/leek_patch.PNG', tile_size, tile_size),
     45: img_loader('data/images/carrot_patch.PNG', tile_size, tile_size),
     46: img_loader('data/images/lettuce_patch.PNG', tile_size, tile_size),
-    47: img_loader('data/images/tile_bg.PNG', tile_size, tile_size),
-    48: img_loader('data/images/tile_bg_dark.PNG', tile_size, tile_size)
+    47: img_loader('data/images/bg_tile.PNG', tile_size / 2, tile_size / 2),
+    48: img_loader('data/images/bg_dark_tile.PNG', tile_size / 2, tile_size / 2),
+    49: img_loader('data/images/tile_bg_brick.PNG', tile_size, tile_size),
+    50: img_loader('data/images/tile_bg_brick_way_out.PNG', tile_size, tile_size),
+    51: img_loader('data/images/tile_bg_brick_window.PNG', tile_size, tile_size),
 }
 
 
@@ -180,6 +211,8 @@ a_press = False
 d_press = False
 switch_counter = 30
 
+bg_tile_keys = [47, 48]
+
 clock = pygame.time.Clock()
 
 selected_tile_surf = pygame.Surface((tile_size * 3, tile_size * 2))
@@ -191,7 +224,7 @@ while run:
     clock.tick(60)
 
     selected_tile_surf.fill((0, 0, 0))
-    screen.blit(background, (0, 0))
+    screen.fill((110, 110, 110))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -208,12 +241,15 @@ while run:
             if event.key == pygame.K_p:
                 for row in map:
                     print(f'{row},')
+                print('-------------->')
+                for row in bg_map:
+                    print(f'{row},')
             if event.key == pygame.K_b:
                 row_count = 0
                 for row in map:
                     col_count = 0
                     for col in row:
-                        if col not in [47, 48]:
+                        if col not in [47, 48, 49, 50, 51]:
                             map[row_count][col_count] = 0
                         col_count += 1
                     row_count += 1
@@ -237,17 +273,41 @@ while run:
         switch_counter -= 1
         if switch_counter < 0:
             tile_counter += 1
+            if tile_counter == 9:
+                tile_counter = 11
             switch_counter = 7
     if a_press:
         switch_counter -= 1
         if switch_counter < 0:
             tile_counter -= 1
+            if tile_counter == 10:
+                tile_counter = 8
             switch_counter = 7
 
-    if tile_counter < 1:
-        tile_counter = 34
-    if tile_counter > 34:
-        tile_counter = 1
+    if tile_counter < 0:
+        tile_counter = num_tiles
+    if tile_counter > num_tiles:
+        tile_counter = 0
+
+    row_count = 0
+    for row in bg_map:
+        col_count = 0
+
+        for tile in row:
+            x = col_count * bg_tile_size
+            y = row_count * bg_tile_size
+            rect = pygame.Rect(x, y, bg_tile_size, bg_tile_size)
+            key = tile_key[tile_counter]
+            # for some reason a tile directly below or above also gets filled in >:(
+            if rect.collidepoint(mouse_pos) and key in bg_tile_keys:
+                if click:
+                    bg_map[row_count][col_count] = key
+                if delete:
+                    bg_map[row_count][col_count] = 0
+            if tile in bg_tile_keys:
+                screen.blit(tile_images[tile], rect)
+            col_count += 1
+        row_count += 1
 
     row_count = 0
     for row in map:
@@ -256,9 +316,10 @@ while run:
             x = col_count * tile_size
             y = row_count * tile_size
             rect = pygame.Rect(x, y, tile_size, tile_size)
-            if rect.collidepoint(mouse_pos):
+            key = tile_key[tile_counter]
+            if rect.collidepoint(mouse_pos) and key not in bg_tile_keys:
                 if click:
-                    map[row_count][col_count] = tile_key[tile_counter]
+                    map[row_count][col_count] = key
                 if delete:
                     map[row_count][col_count] = 0
             if tile != 0:
@@ -267,7 +328,11 @@ while run:
         row_count += 1
 
     img = tile_images[tile_key[tile_counter]]
-    selected_tile_surf.blit(img, (tile_size * 1.5 - img.get_width() / 2, tile_size - img.get_height() / 2))
+    if img.get_width() <= tile_size * 3 and img.get_height() <= tile_size * 2:
+        blit_img = img
+    else:
+        blit_img = pygame.transform.scale(img, (tile_size * 3, tile_size * 2))
+    selected_tile_surf.blit(blit_img, (tile_size * 1.5 - blit_img.get_width() / 2, tile_size - blit_img.get_height() / 2))
 
     screen.blit(pygame.transform.scale(selected_tile_surf,
                                        (tile_size * 6, tile_size * 4)), (width - tile_size * 6, tile_size * 3))
