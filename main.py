@@ -106,7 +106,7 @@ big_tiles = {
     42: (64, 64)
 }
 
-map = level7
+map = tile_map
 bg_map = []
 for row in map:
     bg_row = []
@@ -211,7 +211,8 @@ a_press = False
 d_press = False
 switch_counter = 30
 
-bg_tile_keys = [47, 48]
+bg_tile_keys = [47, 48, 49, 50, 51]
+big_bg_tiles = [49, 50, 51]
 
 clock = pygame.time.Clock()
 
@@ -239,11 +240,11 @@ while run:
             if event.key == pygame.K_s:
                 delete = True
             if event.key == pygame.K_p:
-                for row in map:
-                    print(f'{row},')
-                print('-------------->')
-                for row in bg_map:
-                    print(f'{row},')
+                maps = [map.copy(), bg_map.copy()]
+                for cur_map in maps:
+                    for row in cur_map:
+                        print(f'{row},')
+                    print('-------------->')
             if event.key == pygame.K_b:
                 row_count = 0
                 for row in map:
@@ -298,10 +299,18 @@ while run:
             y = row_count * bg_tile_size
             rect = pygame.Rect(x, y, bg_tile_size, bg_tile_size)
             key = tile_key[tile_counter]
-            # for some reason a tile directly below or above also gets filled in >:(
             if rect.collidepoint(mouse_pos) and key in bg_tile_keys:
                 if click:
-                    bg_map[row_count][col_count] = key
+                    if key not in big_bg_tiles:
+                        bg_map[row_count][col_count] = key
+                    else:
+                        big_row_count = row_count
+                        big_col_count = col_count
+                        if row_count % 2 != 0:
+                            big_row_count = row_count - 1
+                        if col_count % 2 != 0:
+                            big_col_count = col_count - 1
+                        bg_map[big_row_count][big_col_count] = key
                 if delete:
                     bg_map[row_count][col_count] = 0
             if tile in bg_tile_keys:
